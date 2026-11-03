@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>여백</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bar" id="bar">
+    <div class="bar-left">
+      <button type="button" id="btn-library" class="link">원고</button>
+      <input id="title" class="title" type="text" placeholder="제목 없음" autocomplete="off" spellcheck="false" aria-label="제목">
+    </div>
+    <div class="bar-right">
+      <span id="count" class="count" title="공백 포함 글자 수 · 200자 원고지 매수"></span>
+      <span id="saved" class="saved" aria-live="polite"></span>
+      <button type="button" id="btn-snapshot" class="link">판 저장</button>
+      <button type="button" id="btn-versions" class="link">기록</button>
+      <button type="button" id="btn-export" class="link">내보내기</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <textarea id="editor" class="editor"
+      spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"
+      data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false"
+      placeholder="첫 문장을 쓰세요." aria-label="본문"></textarea>
+  </main>
+
+  <aside id="panel-library" class="panel panel-left" hidden>
+    <div class="panel-head">
+      <h2>원고</h2>
+      <button type="button" class="link" data-close>닫기</button>
+    </div>
+    <button type="button" id="btn-new" class="primary">새 원고</button>
+    <ul id="work-list" class="list"></ul>
+    <div class="panel-foot">
+      <p class="hint">원고는 이 브라우저에만 저장됩니다. 가끔 전체 백업을 받아 두세요.</p>
+      <button type="button" id="btn-backup" class="link">전체 백업 받기</button>
+      <label class="link file-label">백업 불러오기<input type="file" id="file-restore" accept=".json,application/json" hidden></label>
+    </div>
+  </aside>
+
+  <aside id="panel-versions" class="panel panel-right" hidden>
+    <div class="panel-head">
+      <h2>판 기록</h2>
+      <button type="button" class="link" data-close>닫기</button>
+    </div>
+    <p class="hint">판 저장을 누른 시점의 원고가 남습니다. 자동 저장은 기록에 쌓이지 않습니다.</p>
+    <ul id="version-list" class="list"></ul>
+  </aside>
+
+  <dialog id="dlg-snapshot" class="dlg">
+    <form method="dialog" id="form-snapshot">
+      <h2>판 저장</h2>
+      <label for="snapshot-label">이름</label>
+      <input id="snapshot-label" type="text" autocomplete="off" spellcheck="false">
+      <div class="dlg-actions">
+        <button type="button" class="link" data-cancel>취소</button>
+        <button type="submit" class="primary">저장</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-version" class="dlg dlg-wide">
+    <div class="dlg-head">
+      <h2 id="version-title"></h2>
+      <span id="version-meta" class="hint"></span>
+    </div>
+    <pre id="version-text" class="version-text"></pre>
+    <div class="dlg-actions">
+      <button type="button" id="btn-version-delete" class="link danger">이 판 삭제</button>
+      <span class="spacer"></span>
+      <button type="button" class="link" data-cancel>닫기</button>
+      <button type="button" id="btn-version-restore" class="primary">이 판으로 되돌리기</button>
+    </div>
+  </dialog>
+
+  <dialog id="dlg-confirm" class="dlg">
+    <p id="confirm-text"></p>
+    <div class="dlg-actions">
+      <button type="button" class="link" data-cancel>취소</button>
+      <button type="button" id="btn-confirm-ok" class="primary">확인</button>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

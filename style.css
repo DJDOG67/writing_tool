@@ -1,0 +1,222 @@
+/* 여백 — 종이 한 장과 볼펜 한 자루. 본문은 가운데 한 단, 도구는 쓰는 동안 사라진다. */
+:root {
+  --paper: #f3f3f1;
+  --ink: #1d1e22;
+  --ink-soft: #6b6d74;
+  --rule: #dcdcd8;
+  --accent: #2b3f8f;      /* 볼펜 잉크 */
+  --danger: #a33a2c;
+  --surface: #fbfbfa;
+  --font-body: "Noto Serif KR", "Noto Serif CJK KR", "Nanum Myeongjo", "AppleMyungjo", "Batang", serif;
+  --font-ui: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --measure: 34em;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #141517;
+    --ink: #d9d8d3;
+    --ink-soft: #85878d;
+    --rule: #2a2c30;
+    --accent: #8c9ce0;
+    --danger: #e0806f;
+    --surface: #1b1c1f;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; margin: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 14px;
+}
+
+button, input { font: inherit; color: inherit; }
+
+/* 상단 막대 */
+.bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  background: var(--paper);
+  z-index: 10;
+  transition: opacity .4s ease;
+}
+.bar-left, .bar-right { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.bar-right { flex-wrap: wrap; justify-content: flex-end; }
+
+body.typing .bar { opacity: 0; pointer-events: none; }
+
+.title {
+  border: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  min-width: 0;
+  width: 20ch;
+  padding: 2px 0;
+  border-bottom: 1px solid transparent;
+}
+.title:focus { outline: none; border-bottom-color: var(--rule); }
+
+.count { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.saved { color: var(--ink-soft); min-width: 5ch; }
+
+.link {
+  background: none;
+  border: 0;
+  padding: 2px 0;
+  color: var(--ink-soft);
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+.link:hover { color: var(--ink); border-bottom-color: var(--ink-soft); }
+.link.danger { color: var(--danger); }
+
+.primary {
+  background: var(--accent);
+  color: var(--paper);
+  border: 0;
+  border-radius: 3px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+.primary:hover { filter: brightness(1.1); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* 본문 */
+.page {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.editor {
+  width: 100%;
+  max-width: var(--measure);
+  height: 100%;
+  padding: 18vh 0 45vh;     /* 아래 여백: 쓰는 줄이 화면 아래에 붙지 않게 */
+  border: 0;
+  resize: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 2;
+  letter-spacing: -0.005em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  caret-color: var(--accent);
+}
+.editor:focus { outline: none; }
+.editor::placeholder { color: var(--ink-soft); opacity: .6; }
+.editor::selection { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+
+/* 패널 */
+.panel {
+  position: fixed;
+  top: var(--bar-h, 52px);   /* 상단 막대는 가리지 않는다 */
+  bottom: 0;
+  width: min(340px, 100vw);
+  background: var(--surface);
+  border: 0 solid var(--rule);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 20;
+  overflow-y: auto;
+}
+.panel[hidden] { display: none; }
+.panel-left { left: 0; border-right-width: 1px; }
+.panel-right { right: 0; border-left-width: 1px; }
+
+.panel-head { display: flex; justify-content: space-between; align-items: baseline; }
+.panel h2, .dlg h2 { margin: 0; font-size: 15px; font-weight: 500; }
+.panel-foot { margin-top: auto; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+
+.hint { margin: 0; color: var(--ink-soft); font-size: 12.5px; line-height: 1.6; }
+
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.list li .main { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; }
+.list li .name { display: block; font-family: var(--font-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list li .sub { display: block; color: var(--ink-soft); font-size: 12px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.list li.current .name { color: var(--accent); }
+.list .empty { color: var(--ink-soft); border: 0; }
+
+.file-label { display: inline-block; }
+
+/* 대화상자 */
+.dlg {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 20px 24px;
+  width: min(360px, calc(100vw - 32px));
+}
+.dlg::backdrop { background: rgb(0 0 0 / .25); }
+.dlg form, .dlg { display: flex; flex-direction: column; gap: 12px; }
+.dlg:not([open]) { display: none; }
+.dlg label { color: var(--ink-soft); font-size: 12.5px; }
+.dlg input[type="text"] {
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+  padding: 6px 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+}
+.dlg input[type="text"]:focus { outline: none; border-bottom-color: var(--accent); }
+.dlg-actions { display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-top: 4px; }
+.dlg-actions .spacer { flex: 1; }
+.dlg p { margin: 0; line-height: 1.6; }
+
+.dlg-wide { width: min(720px, calc(100vw - 32px)); max-height: calc(100vh - 64px); }
+.dlg-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.version-text {
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+  max-height: 60vh;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.9;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+@media (max-width: 640px) {
+  .bar { padding: 10px 16px; flex-wrap: wrap; }
+  .title { width: 12ch; }
+  .editor { font-size: 17px; padding-top: 14vh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar { transition: none; }
+}
